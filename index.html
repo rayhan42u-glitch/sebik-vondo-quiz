@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সেবিক ভন্ড কোচিং সেন্টার</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2b1055 0%, #7597de 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 700px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh; /* স্ক্রিনের বাইরে যাতে না যায় */
+        }
+
+        /* Header Section - Fixed */
+        .header {
+            background: #ffecb3;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid #ffca28;
+            flex-shrink: 0; /* এটা সংকুচিত হবে না */
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #d32f2f;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header h3 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .funny-note {
+            background-color: #d32f2f;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Scrollable Content Area */
+        .scrollable-content {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding: 20px 30px;
+        }
+
+        .quiz-body {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-left: 5px solid #2b1055;
+            padding-left: 15px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .option-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+            opacity: 0.8;
+        }
+
+        /* Footer Section */
+        .footer {
+            padding: 15px 30px;
+            border-top: 1px solid #eee;
+            background: #fdfdfd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .question-count {
+            color: #777;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .next-btn {
+            background: #2b1055;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .next-btn:hover {
+            background: #4527a0;
+            transform: translateY(-2px);
+        }
+
+        /* Result Screen */
+        .result-box {
+            text-align: center;
+            padding: 40px 20px;
+            display: none;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            background: #2b1055;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            border: 5px solid #ffca28;
+        }
+
+        .restart-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div class="header">
+            <h1>সেবিক ভন্ড কোচিং সেন্টার</h1>
+            <h3>কাচিহারা বাজার</h3>
+            <p class="funny-note">💩 জোকের তেল মেখে প্রশ্নের উত্তর শুরু করো 💩</p>
+        </div>
+
+        <div class="scrollable-content">
+            <div class="quiz-body" id="quiz">
+                <h2 class="question-text" id="question">প্রশ্ন লোড হচ্ছে...</h2>
+                <div class="options-container" id="options">
+                    </div>
+            </div>
+
+            <div class="result-box" id="result">
+                <h2>পরীক্ষা শেষ!</h2>
+                <p>তেল মাখা সার্থক হয়েছে কি?</p>
+                <div class="score-circle" id="score">0</div>
+                <button class="restart-btn" onclick="location.reload()">আবার জোকের তেল মাখুন</button>
+            </div>
+        </div>
+
+        <div class="footer" id="footer">
+            <span class="question-count" id="progress">1 / 50</span>
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()">পরের প্রশ্ন &rarr;</button>
+        </div>
+    </div>
+
+    <script>
+        // ৫০টি প্রশ্ন (বাংলা, ইংরেজি, সাধারণ জ্ঞান)
+        const quizData = [
+            // --- বাংলা ---
+            { question: "১. 'অপরিচিতা' গল্পে অনুপমের আসল অভিভাবক কে ছিলেন?", options: ["বাবা", "মা", "মামা", "শ্বশুর"], correct: 2 },
+            { question: "২. 'নিসর্গ' শব্দটির অর্থ কী?", options: ["আকাশ", "প্রকৃতি", "বাতাস", "সাগর"], correct: 1 },
+            { question: "৩. 'বিদ্রোহী' কবিতাটি কোন কাব্যগ্রন্থের অন্তর্গত?", options: ["অগ্নিবীণা", "বিষের বাঁশি", "দোলনচাঁপা", "সাম্যবাদী"], correct: 0 },
+            { question: "৪. ‘বৃষ্টি’ শব্দের সন্ধি বিচ্ছেদ কোনটি?", options: ["বৃষ্ + টি", "বৃষ্ + তি", "বৃতি + ষ", "বৃষ + টি"], correct: 1 },
+            { question: "৫. লালসালু উপন্যাসে মজিদের গ্রামের নাম কী ছিল?", options: ["মহব্বত নগর", "মতিগঞ্জ", "পাহাড়পুর", "সোনাইমুড়ি"], correct: 0 },
+            { question: "৬. 'অপমান' শব্দের 'অপ' উপসর্গটি কোন অর্থে ব্যবহৃত?", options: ["বিকৃত", "বিপরীত", "নিকৃষ্ট", "অভাব"], correct: 1 },
+            { question: "৭. ‘কবর’ নাটকটির রচয়িতা কে?", options: ["জহির রায়হান", "মুনীর চৌধুরী", "সৈয়দ ওয়ালীউল্লাহ", "হুমায়ূন আহমেদ"], correct: 1 },
+            { question: "৮. নিচের কোনটি শুদ্ধ বানান?", options: ["মুমুর্ষু", "মুমূর্ষু", "মুমূর্ষূ", "মুমুর্য"], correct: 1 },
+            { question: "৯. মাইকেল মধুসূদন দত্তের 'মেঘনাদবধ' কাব্যে কোন ছন্দ ব্যবহৃত?", options: ["মাত্রাবৃত্ত", "অক্ষরবৃত্ত", "স্বরবৃত্ত", "গদ্যছন্দ"], correct: 1 },
+            { question: "১০. ৫২-এর ভাষা আন্দোলনের প্রেক্ষাপটে রচিত নাটক কোনটি?", options: ["কবর", "রক্তাক্ত প্রান্তর", "নবান্ন", "পায়ের আওয়াজ পাওয়া যায়"], correct: 0 },
+            { question: "১১. 'সকলের জন্য প্রযোজ্য'—এক কথায় কী বলে?", options: ["সার্বজনীন", "সর্বজনীন", "সর্বজনিন", "সমষ্টিগত"], correct: 1 },
+            { question: "১২. 'দুর্দিনের যাত্রী' গ্রন্থটির রচয়িতা কে?", options: ["রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "প্রমথ চৌধুরী", "শামসুর রাহমান"], correct: 1 },
+            { question: "১৩. বাংলা ভাষায় যতি চিহ্নের প্রবর্তন করেন কে?", options: ["রবীন্দ্রনাথ ঠাকুর", "বঙ্কিমচন্দ্র চট্টপাধ্যায়", "ঈশ্বরচন্দ্র বিদ্যাসাগর", "প্রমথ চৌধুরী"], correct: 2 },
+            { question: "১৪. কোনটি মুক্তিযুদ্ধভিত্তিক উপন্যাস?", options: ["পদ্মা নদীর মাঝি", "আগুনের পরশমণি", "শেষের কবিতা", "পথের পাঁচালী"], correct: 1 },
+            { question: "১৫. ‘যে নারীর স্বামী ও পুত্র নেই’—এক কথায়?", options: ["বিধবা", "অরক্ষনীয়া", "অবীরা", "অসূর্যম্পশ্যা"], correct: 2 },
+
+            // --- English ---
+            { question: "16. What is the Noun form of 'Brief'?", options: ["Briefly", "Briefing", "Brevity", "Briefness"], correct: 2 },
+            { question: "17. The phrase 'Achilles heel' means:", options: ["A strong point", "A weak point", "A hero", "A running shoe"], correct: 1 },
+            { question: "18. Choose the correct spelling:", options: ["Leiutenant", "Lieutenant", "Leutenant", "Liutenant"], correct: 1 },
+            { question: "19. 'The patient had died before the doctor came.' – Which tense?", options: ["Past Indefinite", "Past Perfect", "Past Continuous", "Present Perfect"], correct: 1 },
+            { question: "20. Fill in the gap: He died ___ cholera.", options: ["by", "from", "of", "for"], correct: 2 },
+            { question: "21. Synonym of 'Competent' is:", options: ["Incapable", "Capable", "Weak", "Clumsy"], correct: 1 },
+            { question: "22. 'Hamlet' is a ___ by William Shakespeare.", options: ["Comedy", "Novel", "Tragedy", "Poem"], correct: 2 },
+            { question: "23. Antonym of 'Optimist' is:", options: ["Hopeful", "Pessimist", "Idealist", "Realist"], correct: 1 },
+            { question: "24. Identify the correct sentence:", options: ["One of my friend is a lawyer.", "One of my friends are a lawyer.", "One of my friends is a lawyer.", "One of my friend are lawyer."], correct: 2 },
+            { question: "25. Passive voice of 'Who is calling me?'", options: ["Who is being called?", "By whom am I being called?", "By whom I am called?", "Whom is calling me?"], correct: 1 },
+            { question: "26. Which one is a collective noun?", options: ["Boy", "Library", "Dhaka", "Honesty"], correct: 1 },
+            { question: "27. Translation: 'সকাল থেকে বৃষ্টি হচ্ছে'", options: ["It is raining since morning.", "It has been raining since morning.", "It rains since morning.", "It was raining since morning."], correct: 1 },
+            { question: "28. 'A bolt from the blue' means:", options: ["A thunderstorm", "An unexpected danger", "A blue sky", "A lucky chance"], correct: 1 },
+            { question: "29. Who is the poet of 'The Solitary Reaper'?", options: ["Keats", "Shelley", "Wordsworth", "Byron"], correct: 2 },
+            { question: "30. Fill in the gap: Do not look down ___ the poor.", options: ["at", "on", "upon", "to"], correct: 2 },
+
+            // --- General Knowledge ---
+            { question: "৩১. বাংলাদেশের সংবিধানের রক্ষক কে?", options: ["রাষ্ট্রপতি", "প্রধানমন্ত্রী", "জাতীয় সংসদ", "সুপ্রিম কোর্ট"], correct: 3 },
+            { question: "৩২. মুজিবনগর সরকার গঠিত হয়েছিল কবে?", options: ["১০ এপ্রিল, ১৯৭১", "১৭ এপ্রিল, ১৯৭১", "২৬ মার্চ, ১৯৭১", "১৬ ডিসেম্বর, ১৯৭১"], correct: 0 },
+            { question: "৩৩. বাংলাদেশের সর্ববৃহৎ দ্বীপ কোনটি?", options: ["সন্দ্বীপ", "হাতিয়া", "ভোলা", "মহেশখালী"], correct: 2 },
+            { question: "৩৪. পদ্মা সেতুর দৈর্ঘ্য কত?", options: ["৫.১৫ কিমি", "৬.১৫ কিমি", "৪.৮ কিমি", "৭.২ কিমি"], correct: 1 },
+            { question: "৩৫. বাংলাদেশের জাতীয় পতাকার ডিজাইনার কে?", options: ["জয়নুল আবেদিন", "হাসেম খান", "কামরুল হাসান", "এস এম সুলতান"], correct: 2 },
+            { question: "৩৬. ১৯৭১ সালে ঢাকা কত নম্বর সেক্টরের অধীনে ছিল?", options: ["১ নম্বর", "২ নম্বর", "৩ নম্বর", "৭ নম্বর"], correct: 1 },
+            { question: "৩৭. 'অসমাপ্ত আত্মজীবনী' বইটির লেখক কে?", options: ["তাজউদ্দীন আহমদ", "বঙ্গবন্ধু শেখ মুজিবুর রহমান", "জাহানারা ইমাম", "হুমায়ূন আহমেদ"], correct: 1 },
+            { question: "৩৮. বাংলাদেশের একমাত্র প্রবাল দ্বীপ কোনটি?", options: ["কুতুবদিয়া", "সেন্টমার্টিন", "নিঝুম দ্বীপ", "মনপুরা"], correct: 1 },
+            { question: "৩৯. শহীদ বুদ্ধিজীবী দিবস পালিত হয় কবে?", options: ["১৬ ডিসেম্বর", "২১ ফেব্রুয়ারি", "১৪ ডিসেম্বর", "২৬ মার্চ"], correct: 2 },
+            { question: "৪০. বাংলার ভেনিস বলা হয় কাকে?", options: ["ঢাকা", "চট্টগ্রাম", "সিলেট", "বরিশাল"], correct: 3 },
+            { question: "৪১. জাতিসংঘের সদর দপ্তর কোথায়?", options: ["লন্ডন", "প্যারিস", "নিউইয়র্ক", "জেনেভা"], correct: 2 },
+            { question: "৪২. 'হাজার হ্রদের দেশ' বলা হয় কোন দেশকে?", options: ["নরওয়ে", "ফিনল্যান্ড", "সুইডেন", "জাপান"], correct: 1 },
+            { question: "৪৩. কম্পিউটারের জনক কে?", options: ["বিল গেটস", "স্টিভ জবস", "চার্লস ব্যাবেজ", "অ্যাডা লাভলেস"], correct: 2 },
+            { question: "৪৪. বিশ্বকাপ ফুটবল ২০২৬ কোথায় অনুষ্ঠিত হবে?", options: ["কাতার", "ব্রাজিল", "যুক্তরাষ্ট্র, কানাডা ও মেক্সিকো", "ফ্রান্স"], correct: 2 },
+            { question: "৪৫. জাপানের মুদ্রার নাম কী?", options: ["ইউয়ান", "টাকা", "ডলার", "ইয়েল (Yen)"], correct: 3 },
+            { question: "৪৬. পৃথিবীর ফুসফুস বলা হয় কোন বনকে?", options: ["সুন্দরবন", "আমাজন বন", "কঙ্গো রেইন ফরেস্ট", "ব্ল্যাক ফরেস্ট"], correct: 1 },
+            { question: "৪৭. সার্ক (SAARC)-এর সদর দপ্তর কোথায়?", options: ["ঢাকা", "নয়াদিল্লি", "ইসলামাবাদ", "কাঠমান্ডু"], correct: 3 },
+            { question: "৪৮. নিষিদ্ধ সূর্যের দেশ বলা হয় কাকে?", options: ["জাপান", "নরওয়ে", "ফিনল্যান্ড", "আইসল্যান্ড"], correct: 1 },
+            { question: "৪৯. শান্তিতে নোবেল পুরস্কার কোথা থেকে দেওয়া হয়?", options: ["সুইডেন", "সুইজারল্যান্ড", "নরওয়ে", "আমেরিকা"], correct: 2 },
+            { question: "৫০. স্বাধীন বাংলাদেশের প্রথম প্রধানমন্ত্রী কে ছিলেন?", options: ["বঙ্গবন্ধু শেখ মুজিবুর রহমান", "তাজউদ্দীন আহমদ", "সৈয়দ নজরুল ইসলাম", "ক্যাপ্টেন মনসুর আলী"], correct: 1 }
+        ];
+
+        let currentQuiz = 0;
+        let score = 0;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const progressEl = document.getElementById('progress');
+        const nextBtn = document.getElementById('nextBtn');
+        const quizBody = document.getElementById('quiz');
+        const resultBox = document.getElementById('result');
+        const footer = document.getElementById('footer');
+        const scoreEl = document.getElementById('score');
+
+        function loadQuiz() {
+            nextBtn.style.display = 'none';
+            const currentQuizData = quizData[currentQuiz];
+            
+            // Animation reset
+            quizBody.style.animation = 'none';
+            quizBody.offsetHeight; /* trigger reflow */
+            quizBody.style.animation = 'fadeIn 0.5s ease';
+
+            questionEl.innerText = currentQuizData.question;
+            optionsEl.innerHTML = '';
+
+            currentQuizData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerText = option;
+                button.classList.add('option-btn');
+                button.onclick = () => checkAnswer(index, button);
+                optionsEl.appendChild(button);
+            });
+
+            progressEl.innerText = `প্রশ্ন: ${currentQuiz + 1} / ${quizData.length}`;
+        }
+
+        function checkAnswer(selectedIndex, selectedBtn) {
+            const correctIndex = quizData[currentQuiz].correct;
+            const allButtons = optionsEl.querySelectorAll('.option-btn');
+
+            allButtons.forEach(btn => btn.setAttribute('disabled', 'true'));
+
+            if (selectedIndex === correctIndex) {
+                selectedBtn.classList.add('correct');
+                score++;
+            } else {
+                selectedBtn.classList.add('wrong');
+                allButtons[correctIndex].classList.add('correct');
+            }
+
+            nextBtn.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuiz++;
+            if (currentQuiz < quizData.length) {
+                loadQuiz();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quizBody.style.display = 'none';
+            footer.style.display = 'none';
+            resultBox.style.display = 'block';
+            
+            scoreEl.innerText = `${score} / ${quizData.length}`;
+        }
+
+        loadQuiz();
+
+    </script>
+</body>
+</html>
